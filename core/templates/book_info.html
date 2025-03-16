@@ -30,7 +30,8 @@
                                 UNLIKE
                             </a>
                         {% endif %}
-                    </div class="text-left py-2">
+                    </div>
+                    <div class="text-left py-2">
                         {% if request.user == book.created_by %}
                             {% if book.alerts %}
                                 <a href="{% url 'core:book_alert' book.id %}" class="size-fit px-2 py-1 text-white border-2 hover:border-white hover:bg-green-500  bg-green-700 text-xl rounded-2xl">
