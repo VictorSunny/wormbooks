@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %} Genres {% endblock %}
+
+{% block page_name %} CATEGORIES {% endblock %}
+{% block content %}
+
+    <div class="space-x-5 grid grid-cols-3 lg:grid-cols-4 py-4 px-2 space-y-5 text-center mx-auto lg:w-3/4 ">
+    {% for category in category_content %}
+        <a href="{{category.slug}}" class="lg:p-10 sm:p-2 rounded-xl bg-cyan-100 font-serif contain-content inline-flex text-center">
+            <div class="text-center mx-auto font-mono"><strong class="font-bold text-sm lg:text-2xl">{{ category.slug }}</strong><br>
+                 {{category.books.all | length }} books</div>
+        </a>
+    {% endfor %}
+    </div>
+
+{% endblock %}

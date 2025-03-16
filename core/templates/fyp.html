@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block title %}{% endblock %}
+{% block page_name %} CATCH UP WITH YOUR WORMS {% endblock %}
+
+{% block content %}
+
+<div class="space-y-4 p-4 lg:w-3/4 justify-center mx-auto">
+    {% if data %}
+    {% for book in data %}
+     <div class="size-full flex space-x-6 border border-white rounded-2xl">
+        <div class="p-1 size-4/6 break-words font-mono px-4 float-left rounded-2xl hover:bg-gray-700">
+            <a href="{% url 'core:books' book.id %}" class="size-full block hover:text-white">
+                
+                <div><div><li class="inline-flex text-sm font-serif"> {{book.created_by.username | upper }} </li> recommended </div><div class="text-sm font-thin">{{ book.created_on }}</div></div><hr>
+                <strong class="">{{ book.name }}</strong><br>
+                author: {{ book.author }}<br>
+                genre: {{ book.category.slug }}<br>
+                likes: {{ book.likes | length }}
+                
+            </a>
+        </div>
+
+        <div class="my-auto lg:size-1/6 p-2 flex font-mono float-right  text-center">
+            {% if request.user.id not in book.likes  %}
+                <a href="{% url 'core:like' book.id %}" class="size-full border-2 hover:border-white hover:bg-pink-500  bg-pink-400 lg:text-xl px-2 sm:text-sm contain-content rounded-2xl">
+                    LIKE
+                </a>
+            {% else %}
+                <a href="{% url 'core:like' book.id %}" class="size-full border-2 hover:border-white hover:bg-amber-500 bg-amber-400 lg:text-xl px-2 sm:text-sm contain-content rounded-2xl">
+                    UNLIKE
+                </a>
+            {% endif %}
+        </div>
+     </div>
+    {% endfor %}
+
+    {% else %}
+        <div class="text-center p-10 text-cyan-900 text-4xl font-mono font-thin">
+            Looks empty here 🥺<br>
+            Start following users to see their recommendations here! ;)
+        </div>
+    {% endif %}
+    </div>
+    {% if data.has_other_pages %}
+    <div class="w-full p-2 justify-items-center">
+        <div class="p-4 bg-white text-black border border-black">
+            {{ data.number }} of {{ total }}
+        </div>
+        <div class="w-1/2 justify p-1 justify-between inline-flex space-x-10">
+            {% if data.has_previous %}
+            <form method="get" action="." class="">
+                <input type="hidden" name="page" value="{{data.previous_page_number}}"></input>
+                <button class="px-10 py-2 bg-white text-black border border-black">
+                    prev
+                </button>
+            </form>
+            {% endif %}
+            {% if data.has_next %}
+            <form method="get" action="." class="">
+                <input type="hidden" name="page" value="{{data.next_page_number}}"></input>
+                <button class="px-10 py-2 bg-white text-black border border-black">
+                    next
+                </button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+{% endblock %}

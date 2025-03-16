@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% block title %} {{ book.name }} {% endblock %}
+{% block navbar %}{% endblock %}
+
+{% block page_name %} <strong>{{ book.name }}</strong> by <strong> {{ book.author }} </strong> {% endblock %}
+{% block content %}
+    <div class="px-2 lg:px-10 font-mono lg:inline-flex w-full">
+        <div class="contain-content space-y-4 py-2 bg-cyan-300 text-sm lg:text-lg lg:w-3/5 px-1 break-words"> 
+                    <div>
+                        <strong>Title:</strong> {{ book.name.upper }}<br>
+
+                        <strong>Genre:</strong> <a href="{% url 'core:category-books' book.category.slug %}" class="border px-2 bg-cyan-400 rounded-2xl hover:bg-cyan-600 hover:text-white">
+                            {{ book.category.slug.lower }}</a><br>
+
+                        <strong>Added By:</strong>
+                        <a href="{% url 'core:profile' book.created_by.username %}" class="border px-2 bg-cyan-400 rounded-2xl hover:bg-cyan-600 hover:text-white">
+                            {{ book.created_by }}
+                        </a> <br>
+                        
+                        <a href="{% url 'core:likes' book.id %}" class="p-2 text-sm lg:text-lg bg-cyan-500 hover:bg-cyan-600 text-white"><strong>likes</strong> {{ book.likes.all | length }}</a>
+                    </div>
+                    
+                    <div class="text-left text-sm lg:text-lg py-2">
+                        {% if request.user not in book.likes.all  %}
+                            <a href="{% url 'core:like' book.id %}" class="size-fit px-2 py-1    border-2 hover:border-white hover:bg-pink-500  bg-pink-400 rounded-2xl">
+                                LIKE
+                            </a>
+                        {% else %}
+                            <a href="{% url 'core:like' book.id %}" class="size-fit px-2 py-1 border-2 hover:border-white hover:bg-amber-500 bg-amber-400 rounded-2xl">
+                                UNLIKE
+                            </a>
+                        {% endif %}
+                    </div class="text-left py-2">
+                        {% if request.user == book.created_by %}
+                            {% if book.alerts %}
+                                <a href="{% url 'core:book_alert' book.id %}" class="size-fit px-2 py-1 text-white border-2 hover:border-white hover:bg-green-500  bg-green-700 text-xl rounded-2xl">
+                                    notifications: on
+                                </a>
+                            {% else %}
+                            <a href="{% url 'core:book_alert' book.id %}" class="size-fit px-2 py-1 text-white border-2 hover:border-white hover:bg-blue-500  bg-blue-700 text-xl rounded-2xl">
+                                notifications: off
+                            </a>
+                            {% endif %}
+                        {% endif %}
+                    <div>
+
+                    </div>
+
+                    <div class="text-sm lg:text-lg bg-cyan-400 text-black border-white border rounded font-mono text-wrap">
+                        Description: <br>
+                        {% if book.description %}
+                            {{ book.description }}
+                        {% else %}
+                            Nothing to see here
+                        {% endif %}
+                    </div>
+        </div>
+
+
+        <div class="lg:w-2/5 text-sm lg:text-lg contain-content bg-none text-center font-mono p-4 border border-white">
+            <strong> META <hr> </strong>
+            <strong>Author:</strong> {{ book.author }} <br>
+            <strong>Year:</strong> {{ book.year }} <br>
+            <strong>Genre:</strong> {{ book.category.slug }} <br>
+            <strong>Added By:</strong>
+            <a href="{% url 'core:profile' book.created_by.username %}" class="px-2 border bg-cyan-400 rounded-2xl hover:bg-cyan-600 hover:text-white">
+                {{ book.created_by }}
+            </a> <br>
+            <div class="text-left text-sm lg:text-lg"><strong class="font-serif">last modified:</strong>  {{ book.modified_on | date:"h:i A, F d, Y" }}</div>
+            <hr>
+            {% if book.contributors %}
+                <div class="font-serif lg:text-2xl"> CONTRIBUTORS </div>
+                <div class="inline lg:text-lg p-2 space-x-2 space-y-2">
+                    {% for user in book.contributors.all %}
+                        <a href="{% url 'core:profile' user.username %}" class="p-2 float-left inline-flex bg-amber-200 border text-center rounded-xl">
+                            {{ user.username }}
+                        </a>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        
+        
+    </div>
+
+    <div class="w-3/5 p-6 ml-4 ">
+        {% if request.user == book.created_by %}
+            <a href="{% url 'core:update_book' 'update' book.id %}" class="p-2 block text-center bg-pink-400 border rounded-xl text-white hover:bg-pink-300 hover:text-black"> edit book info </a>
+            <a href="{% url 'core:delete_book' book.id %}" class="p-2 block text-center bg-red-500 border rounded-xl text-white hover:bg-red-400 hover:text-black"> delete </a>
+        {% endif %}
+    </div>
+
+    <div class="">
+        
+        {% if user.is_authenticated %}
+        <div class="inline">
+            <form method="post" class="font-serif border-t-2 p-6 space-y-4">
+                {% csrf_token %}
+                <textarea name="comment" placeholder="enter your comment here" class="h-20 rounded-xl lg:w-3/5 w-full p-2 border border-white"></textarea><br>
+                <button class="p-2 bg-cyan-300 font-bold rounded-xl text-black border-2 lg:text-lg text-xs"> comment </button>
+            </form>
+        </div>
+        {% endif %}
+        
+        <div class="p-2 bg-gray-400 space-y-4">
+            {% for comment in book.comments.all %}
+                <div class="p-2 border-2  lg:w-2/3 bg-pink-400 border-white rounded-xl lg:text-lg font-mono">
+                    <a href="{% url 'core:profile' comment.author.username %}"><strong>{{ comment.author }}</strong></a>
+                    <p class="font-serif">{{ comment.body }}</p>
+                    <p class="text-sm">{{ comment.date_created | date:"h:i A, F d, Y" }}</p>
+                    {% if request.user == comment.author %}
+                    <div class="w-full p-2 text-right">
+                        <a href="{% url 'core:delete_comment' comment.id %}" class="px-2 py-1 rounded-xl border-black text-center text-white hover:bg-red-400 border bg-red-600"> delete </a>
+                    </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

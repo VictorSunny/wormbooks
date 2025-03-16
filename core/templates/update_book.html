@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %} new book {% endblock %}
+{% block navbar %}{% endblock %}
+{% block page_name %} UPDATE BOOK: {{data.name}} {% endblock %}
+
+{% block content %}
+<div class="w-full py-4">
+    <form method="post" class="lg:w-3/5  mx-auto p-2 text-sm lg:text-lg space-y-4 font-mono ">
+        {% csrf_token %}
+        <div class="lg:flex">
+            <label for="name" class="w-1/7 m-auto"> TITLE: </label>
+            <input name="name" type="text" value="{{ data.name }}" placeholder="required" class="w-6/7 rounded-xl p-2 border border-white" required>
+        </div>
+
+        <div class="lg:flex">
+            <label for="category_id" class="w-1/7 m-auto"> GENRE: </label>
+            <input name= "category_id" type="text" value="{{ data.category.slug }}" placeholder="required" class="w-6/7 rounded-xl p-2 border border-white" required>
+        </div>
+
+        <div class="lg:flex">
+            <label for="author" class="w-1/7 m-auto"> AUTHOR: </label>
+            <input name= "author" type="text" value="{{ data.author }}" placeholder="optional" class="w-6/7 rounded-xl p-2 border border-white">
+        </div>
+
+        <div class="lg:flex">
+            <label for="year" class="w-1/7 m-auto"> YEAR: </label>
+            <input name= "year" type="text" value="{{ data.year }}" placeholder="optional" class="w-6/7 rounded-xl p-2 border border-white">
+        </div>
+
+        <div class="lg:flex">
+            <label for="description" class="w-1/7 mx-auto"> ABOUT: </label>
+            <textarea name= "description" placeholder="required" class="w-6/7 rounded-xl p-2 border h-40 border-white" required>{{ data.description }}</textarea>
+        </div>
+
+        <button class="rounded-2xl border border-black text-lg lg:text-xl mx-auto flex p-2 bg-amber-500 hover:bg-amber-700 text-white font-mono" method="post"> UPDATE </button>
+
+    </form>
+</div>
+{% endblock %}

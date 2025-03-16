@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %} SETTINGS {% endblock %}
+{% block page_name %} CHANGE PASSWORD {% endblock %}
+{% block navbar %}{% endblock %}
+{% block utils %}{% endblock %}
+
+{% block content %}
+
+<div class="text-xl font-light lg:w-5/6  rounded-xl space-y-4 mx-auto p-2 mt-4 mb-4">
+
+    <div class="bg-cyan-200 hover:font-semibold hover:text-white hover:bg-cyan-500 w-full rounded-xl p-2 border-2 hover:border-white font-stretch-200% text-black">
+        <a href="{% url 'authapp:email_settings' %}" class="size-full">
+            <div>
+                CHANGE EMAIL
+            </div>
+        </a>
+    </div>
+
+    <div class="bg-cyan-200 hover:font-semibold hover:text-white hover:bg-cyan-500 w-full rounded-xl p-2 border-2 hover:border-white font-stretch-200% text-black">
+        <a href="{% url 'authapp:password_settings' %}" class="size-full">
+            <div>
+                CHANGE PASSWORD
+            </div>
+        </a>
+    </div>
+
+
+</div>
+
+{% endblock %}

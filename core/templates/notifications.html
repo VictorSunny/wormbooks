@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %} Notifications {% endblock %}
+
+{% block page_name %} NOTIFICATIONS {% endblock %}
+
+{% block content %}
+    <div class="lg:w-3/5 font-mono mx-auto py-4 px-2 space-y-4">
+        {% if notifications %}
+            {% for alert in request.user.notifications.all %}
+                {% if alert.viewed_status > 0 %}
+                    <div class="border rounded-2xl text-black bg-teal-300 p-2">
+                        {% if alert.book %}
+                            <a href="{% url 'core:books' alert.book.id %}" class="size-full">
+                                <p class="sm:text-xs lg:text-xl w-3/4 font-bold"> {{ alert.label }} </p>
+                                <p class="sm:text-xs lg:text-xl"> {{ alert.header }} </p>
+
+                                <p class="text-sm font-serif"> {{alert.created_on }} </p>
+                            </a>
+                        {% elif alert.account %}
+                            <a href="{% url 'core:profile' alert.account.username %}" class="size-full">
+                                <p class="sm:text-xs lg:text-xl w-3/4 font-bold"> {{ alert.label }} </p>
+                                <p class="sm:text-xs lg:text-xl"> {{ alert.header }} </p>
+
+                                <p class="text-sm font-serif"> {{alert.created_on }} </p>
+                            </a>
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <div class="border rounded-2xl text-black bg-teal-100 p-2">
+                        {% if alert.book %}
+                            <a href="{% url 'core:books' alert.book.id %}" class="size-full">
+                                <p class="sm:text-xs lg:text-xl w-3/4 font-bold"> {{ alert.label }} </p>
+                                <p class="sm:text-xs lg:text-xl"> {{ alert.header }} </p>
+
+                                <p class="text-sm font-serif"> {{alert.created_on }} </p>
+                            </a>
+                        {% elif alert.account %}
+                            <a href="{% url 'core:profile' alert.account.username %}" class="size-full">
+                                <p class="sm:text-xs lg:text-xl w-3/4 font-bold"> {{ alert.label }} </p>
+                                <p class="sm:text-xs lg:text-xl"> {{ alert.header }} </p>
+
+                                <p class="text-sm font-serif"> {{alert.created_on }} </p>
+                            </a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+                <div class="text-6xl px-10 py-30 text-center font-mono bg-yellow-300">
+                    Looks like there's nothing here
+                    <p class="text-2xl font-serif"> start interacting to get noticed ;) </p>
+                </div>
+        {% endif %}
+    </div>
+{% endblock %}

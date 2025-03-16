@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block title %} worm- {{profile_owner.username}} {% endblock %}
+{% block page_div %}{% endblock %}
+
+
+{% block content %}
+
+    <div class="lg:flex sm:inline-flex lg:pr-5">
+        <div class="lg:w-3/7 rounded-tr-2xl w-full bg-cyan-400 text-black h-fit border-white border p-2 text-3xl font-mono text-wrap">
+            <div class="flow-root w-full py-2 space-x-4">
+                <div class="float-left lg:text-6xl text-4xl">
+                    @{{ profile_owner.username }}
+                </div>
+                <div class="text-center text-xl float-right">
+                {% if request.user != profile_owner %}
+                        {% if request.user not in profile_owner.followers.all  %}
+                            <a href="{% url 'core:follow' profile_owner.username %}" class="size-fit bg-green-300 rounded-2xl p-2"> follow </a>
+                        {% else %}
+                            <a href="{% url 'core:follow' profile_owner.username %}" class="size-fit bg-amber-500 rounded-2xl p-2"> unfollow </a>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+            <p class="text-lg lg:text-xl">Contributions: {{ profile_owner.books.all | length }}</p>
+            <div class="space-y-4 font-bold lg:text-xl text-sm">
+                <a href="{% url 'core:network' profile_owner.username 'followers' %}" class="bg-amber-300 hover:bg-amber-500 border-white border-2 rounded-xl block w-fit text-white p-2">Followers: {{ profile_owner.followers.all | length }}</a>
+                <a href="{% url 'core:network' profile_owner.username 'following' %}" class="bg-amber-600 hover:bg-amber-800 border-white border-2 rounded-xl block w-fit text-white  p-2">Following: {{ profile_owner.following.all | length }}</a>
+                
+            </div>
+            <p class="text-lg py-4 text-green-900 font-serif">{{ profile_owner.about }}</p>
+        </div>
+        <div class="lg:w-3/7 w-full bg-red-300 font-mono lg:text-2xl sm:text-sm  p-4 text-right rounded-br-2xl rounded-tr-2xl">
+            <div class="lg:text-xl"><strong>DATE JOINED: </strong> {{profile_owner.date_joined | date:"F d, Y"  }} </div>   
+            <div class="lg:text-xl"><strong>LAST ACTIVE: </strong> {{profile_owner.last_login | date:"h:i A, F d, Y" }} </div>
+            <div>
+                {% if request.user == profile_owner %}
+                <div class="mt-2">
+                    <a href="{% url 'authapp:settings' %}" class="bg-cyan-600 hover:bg-cyan-700 p-2 border rounded-xl border-white hover:border-black text-gray-50">
+                        settings
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="p-4 mt-4 w-5/6 rounded-2xl mx-auto mb-4 lg:text-2xl bg-gray-400 text-center font-mono text-white">
+        {% if request.user == profile_owner %}
+            ALL YOUR CONTRIBUTIONS SO FAR
+        {% else %}
+            {{profile_owner.username  | upper }}'S CONTRIBUTIONS
+        {% endif %}
+    </div>
+
+    <div class="space-y-4 p-4 lg:w-3/4 justify-center mx-auto">
+        {% if data %}
+        {% for book in data %}
+         <div class="size-full flex space-x-6 border border-white rounded-2xl">
+            <div class="p-1 size-4/6 break-words font-mono px-4 float-left rounded-2xl hover:bg-gray-700">
+                <a href="{% url 'core:books' book.id %}" class="size-full block hover:text-white">
+                    
+                    <strong class="">{{ book.name }}</strong><br>
+                    author: {{ book.author }}<br>
+                    genre: {{ book.category.slug }}<br>
+                    likes: {{ book.likes | length }}
+                    
+                </a>
+            </div>
+    
+            <div class="my-auto contain-content lg:size-1/6 p-2 flex font-mono float-right  text-center">
+                {% if request.user.id not in book.likes  %}
+                    <a href="{% url 'core:like' book.id %}" class="size-full border-2 hover:border-white hover:bg-pink-500  bg-pink-400 lg:text-xl px-2 rounded-2xl">
+                        LIKE
+                    </a>
+                {% else %}
+                    <a href="{% url 'core:like' book.id %}" class="size-full border-2 hover:border-white hover:bg-amber-500 bg-amber-400 lg:text-xl px-2 rounded-2xl">
+                        UNLIKE
+                    </a>
+                {% endif %}
+            </div>
+         </div>
+        {% endfor %}
+        {% else %}
+        <div class="lg:text-6xl sm:text-xl px-10 lg:py-24 sm:py-12 text-center font-mono bg-yellow-300">
+            Looks like there's nothing here
+            <p class="text-2xl font-serif"> start posting now ;) </p>
+            <a href="{% url 'core:create_book' %}" class="bg-pink-500 text-white border border-r-white text-2xl p-2">
+                recommend
+            </a>
+        </div>
+        {% endif %}
+        </div>
+        {% if data.has_other_pages %}
+        <div class="w-full p-2 justify-items-center">
+            <div class="p-4 bg-white text-black border border-black">
+                {{ data.number }} of {{ total }}
+            </div>
+            <div class="w-1/2 justify p-1 justify-between inline-flex space-x-10">
+                {% if data.has_previous %}
+                <form method="get" action="." class="">
+                    <input type="hidden" name="page" value="{{data.previous_page_number}}"></input>
+                    <button class="px-10 py-2 bg-white text-black border border-black">
+                        prev
+                    </button>
+                </form>
+                {% endif %}
+                {% if data.has_next %}
+                <form method="get" action="." class="">
+                    <input type="hidden" name="page" value="{{data.next_page_number}}"></input>
+                    <button class="px-10 py-2 bg-white text-black border border-black">
+                        next
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+{% endblock %}

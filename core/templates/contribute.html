@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %} Contribute {% endblock %}
+
+{% block page_name %} The following books are not detailed enough :(<br>
+help by filling the blanks if you're familiar with the book ;) {% endblock %}
+{% block navbar %}{% endblock %}
+{% block content %}
+
+<div class="space-y-4 p-4 lg:w-3/4 justify-center mx-auto">
+    {% for book in data %}
+     <div class="size-full flex space-x-6 border border-white rounded-2xl">
+        <div class="p-1 w-full break-words font-mono px-4 float-left rounded-2xl hover:text-white hover:bg-gray-700">
+            <a href="{% url 'core:update_book' 'contribute' book.id %}" class="flex size-full hover:text-white">
+                <div>
+                    <strong class="">{{ book.name }}</strong><br>
+                    author: {{ book.author }}<br>
+                    genre: {{ book.category.slug }}<br>
+                    likes: {{ book.likes | length }}
+                </div>
+                
+            </a>
+        </div>
+
+     </div>
+    {% endfor %}
+    </div>
+    {% if data.has_other_pages %}
+    <div class="w-full p-2 justify-items-center">
+        <div class="p-4 bg-white text-black border border-black">
+            {{ data.number }} of {{ total }}
+        </div>
+        <div class="w-1/2 justify p-1 justify-between inline-flex space-x-10">
+            {% if data.has_previous %}
+            <form method="get" action="." class="">
+                <input type="hidden" name="page" value="{{data.previous_page_number}}"></input>
+                <button class="px-10 py-2 bg-white text-black border border-black">
+                    prev
+                </button>
+            </form>
+            {% endif %}
+            {% if data.has_next %}
+            <form method="get" action="." class="">
+                <input type="hidden" name="page" value="{{data.next_page_number}}"></input>
+                <button class="px-10 py-2 bg-white text-black border border-black">
+                    next
+                </button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+{% endblock %}

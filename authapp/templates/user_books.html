@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %} Contribute {% endblock %}
+
+{% block page_name %} MANAGE BOOKS  {% endblock %}
+{% block navbar %}{% endblock %}
+{% block utils %}{% endblock %}
+{% block content %}
+
+<div class="space-y-4 p-4 w-full justify-center mx-auto">
+    {% if data %}
+        {% for book in data %}
+        <div class="size-full flex space-x-6 border border-white rounded-2xl lg:w-4/5">
+            <div class="p-1 w-full break-words inline-flex font-mono px-4 float-left rounded-2xl hover:text-white hover:bg-gray-700">
+                <div class="w-4/6 size-full">
+                    <strong class="">{{ book.name }}</strong><br>
+                    author: {{ book.author }}<br>
+                    genre: {{ book.category.slug }}<br>
+                </div>
+                
+                <div class="w-2/6 space-x-2 inline-flex my-auto size-fit contain-content">
+                    <div>
+                        <a href="{% url 'authapp:user_book_update' book.id %}" class="bg-cyan-500 border text-xs lg:text-lg text-center rounded-xl text-white p-2">
+                            edit
+                        </a>
+                    </div>
+                    <div>
+                        <a href="{% url 'authapp:user_book_delete' book.id %}" class="bg-red-500 text-xs lg:text-lg text-center rounded-xl p-2 text-white ">
+                            delete
+                        </a>
+                    </div>
+                </div>
+                
+            </div>
+
+        </div>
+        {% endfor %}
+        </div>
+        {% if data.has_other_pages %}
+        <div class="w-full p-2 justify-items-center">
+            <div class="p-4 bg-white text-black border border-black">
+                {{ data.number }} of {{ total }}
+            </div>
+            <div class="w-1/2 justify p-1 justify-between inline-flex space-x-10">
+                {% if data.has_previous %}
+                <form method="get" action="." class="">
+                    <input type="hidden" name="page" value="{{data.previous_page_number}}"></input>
+                    <button class="px-10 py-2 bg-white text-black border border-black">
+                        prev
+                    </button>
+                </form>
+                {% endif %}
+                {% if data.has_next %}
+                <form method="get" action="." class="">
+                    <input type="hidden" name="page" value="{{data.next_page_number}}"></input>
+                    <button class="px-10 py-2 bg-white text-black border border-black">
+                        next
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    
+    {% else %}
+    <div class="text-6xl px-10 py-30 text-center font-mono bg-yellow-300">
+        Looks like there's nothing here
+        <p class="text-2xl font-serif"> start posting ;) </p>
+    </div>
+    {% endif %}
+
+{% endblock %}
